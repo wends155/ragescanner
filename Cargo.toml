@@ -2,6 +2,10 @@
 name = "ragescanner"
 version = "0.1.0"
 edition = "2021"
+description = "A high-performance, asynchronous IP scanner for Windows built with Rust, NWG, and Tokio."
+license = "MIT"
+repository = "https://github.com/wends155/ragescanner"
+authors = ["WSALIGAN"]
 
 [dependencies]
 native-windows-gui = "1.0.13"
