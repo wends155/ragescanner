@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Device Details View</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#13a4ec",
+                        "background-light": "#f6f7f8",
+                        "background-dark": "#101c22",
+                    },
+                    fontFamily: {
+                        "display": ["Inter"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(19, 164, 236, 0.2);
+            border-radius: 10px;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+  </head>
+<body class="bg-background-light dark:bg-background-dark text-slate-900 dark:text-slate-100 min-h-screen font-display">
+<!-- Mobile Header / Navigation -->
+<header class="sticky top-0 z-50 bg-background-light/80 dark:bg-background-dark/80 backdrop-blur-md border-b border-primary/10 px-4 py-3 flex items-center justify-between">
+<div class="flex items-center gap-3">
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-icons text-primary">arrow_back_ios_new</span>
+</button>
+<h1 class="text-lg font-semibold tracking-tight">Device Details</h1>
+</div>
+<button class="p-2 hover:bg-primary/10 rounded-full transition-colors">
+<span class="material-icons text-primary">more_vert</span>
+</button>
+</header>
+<main class="max-w-md mx-auto p-4 space-y-6 pb-24">
+<!-- Device Identity Card -->
+<section class="flex flex-col items-center text-center space-y-3 py-4">
+<div class="relative">
+<div class="w-24 h-24 rounded-2xl bg-primary/10 flex items-center justify-center border border-primary/20">
+<span class="material-icons text-5xl text-primary">desktop_windows</span>
+</div>
+<div class="absolute -bottom-1 -right-1 w-6 h-6 bg-green-500 border-4 border-background-dark rounded-full"></div>
+</div>
+<div>
+<h2 class="text-2xl font-bold tracking-tight">DESKTOP-R420</h2>
+<p class="text-sm text-slate-500 dark:text-slate-400 font-medium">Workstation • Online for 14h 22m</p>
+</div>
+</section>
+<!-- Quick Action Bar -->
+<section class="grid grid-cols-3 gap-3">
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-primary rounded-xl text-white shadow-lg shadow-primary/20 active:scale-95 transition-transform">
+<span class="material-icons">settings_input_antenna</span>
+<span class="text-xs font-semibold">Ping</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-primary/10 border border-primary/20 rounded-xl text-primary active:scale-95 transition-transform">
+<span class="material-icons">route</span>
+<span class="text-xs font-semibold">Traceroute</span>
+</button>
+<button class="flex flex-col items-center justify-center gap-2 p-4 bg-primary/10 border border-primary/20 rounded-xl text-primary active:scale-95 transition-transform">
+<span class="material-icons">edgesensor_high</span>
+<span class="text-xs font-semibold">Remote</span>
+</button>
+</section>
+<!-- Network Details Card -->
+<div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-primary/10 rounded-xl overflow-hidden shadow-sm">
+<div class="px-4 py-3 border-b border-slate-200 dark:border-primary/10 flex items-center gap-2">
+<span class="material-icons text-primary text-sm">lan</span>
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Network Details</h3>
+</div>
+<div class="divide-y divide-slate-200 dark:divide-primary/5">
+<div class="px-4 py-3 flex justify-between items-center">
+<div>
+<p class="text-xs text-slate-500 font-medium">Internal IP</p>
+<p class="font-mono text-sm text-primary">192.168.1.15</p>
+</div>
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons text-sm">content_copy</span>
+</button>
+</div>
+<div class="px-4 py-3 flex justify-between items-center">
+<div>
+<p class="text-xs text-slate-500 font-medium">External IP</p>
+<p class="font-mono text-sm">72.144.12.108</p>
+</div>
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons text-sm">content_copy</span>
+</button>
+</div>
+<div class="px-4 py-3">
+<p class="text-xs text-slate-500 font-medium">DNS Suffix</p>
+<p class="text-sm">office.local.net</p>
+</div>
+</div>
+</div>
+<!-- Hardware Info Card -->
+<div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-primary/10 rounded-xl overflow-hidden shadow-sm">
+<div class="px-4 py-3 border-b border-slate-200 dark:border-primary/10 flex items-center gap-2">
+<span class="material-icons text-primary text-sm">memory</span>
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Hardware Info</h3>
+</div>
+<div class="divide-y divide-slate-200 dark:divide-primary/5">
+<div class="px-4 py-3 flex justify-between items-center">
+<div>
+<p class="text-xs text-slate-500 font-medium">MAC Address</p>
+<p class="font-mono text-sm">00:1A:2B:3C:4D:5E</p>
+</div>
+<button class="p-2 text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons text-sm">content_copy</span>
+</button>
+</div>
+<div class="px-4 py-3">
+<p class="text-xs text-slate-500 font-medium">NIC Vendor</p>
+<p class="text-sm flex items-center gap-2">
+                        Intel Corporation 
+                        <span class="px-2 py-0.5 bg-primary/10 text-primary text-[10px] rounded-full font-bold uppercase">Gigabit</span>
+</p>
+</div>
+<div class="px-4 py-3">
+<p class="text-xs text-slate-500 font-medium">OS Platform</p>
+<p class="text-sm">Windows 11 Pro (23H2)</p>
+</div>
+</div>
+</div>
+<!-- Active Ports Card -->
+<div class="bg-white dark:bg-slate-800/40 border border-slate-200 dark:border-primary/10 rounded-xl overflow-hidden shadow-sm">
+<div class="px-4 py-3 border-b border-slate-200 dark:border-primary/10 flex items-center justify-between">
+<div class="flex items-center gap-2">
+<span class="material-icons text-primary text-sm">settings_ethernet</span>
+<h3 class="text-sm font-bold uppercase tracking-wider text-slate-500">Active Ports</h3>
+</div>
+<span class="text-[10px] font-bold bg-primary/20 text-primary px-2 py-1 rounded-full">4 OPEN</span>
+</div>
+<div class="max-h-64 overflow-y-auto custom-scrollbar">
+<table class="w-full text-left">
+<thead class="bg-slate-50 dark:bg-slate-900/50">
+<tr>
+<th class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase">Port</th>
+<th class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase">Proto</th>
+<th class="px-4 py-2 text-[10px] font-bold text-slate-400 uppercase">Service</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-slate-200 dark:divide-primary/5">
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-4 py-3 font-mono text-sm text-primary font-semibold">80</td>
+<td class="px-4 py-3 text-xs text-slate-500">TCP</td>
+<td class="px-4 py-3 text-sm">HTTP</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-4 py-3 font-mono text-sm text-primary font-semibold">443</td>
+<td class="px-4 py-3 text-xs text-slate-500">TCP</td>
+<td class="px-4 py-3 text-sm">HTTPS</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-4 py-3 font-mono text-sm text-primary font-semibold">3389</td>
+<td class="px-4 py-3 text-xs text-slate-500">TCP</td>
+<td class="px-4 py-3 text-sm">RDP</td>
+</tr>
+<tr class="hover:bg-primary/5 transition-colors">
+<td class="px-4 py-3 font-mono text-sm text-primary font-semibold">53</td>
+<td class="px-4 py-3 text-xs text-slate-500">UDP</td>
+<td class="px-4 py-3 text-sm">DNS</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Location Context (Static Map Placeholder) -->
+<div class="rounded-xl overflow-hidden relative group">
+<div class="absolute inset-0 bg-gradient-to-t from-background-dark/80 to-transparent z-10"></div>
+<img alt="Network Location Map" class="w-full h-32 object-cover grayscale opacity-60 group-hover:opacity-100 transition-opacity" data-alt="Abstract network topology map" data-location="San Francisco" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDQK2TcIqoJhiWphxAy3q1oiNwKy598ZtLEtOZogPD1mjXn51bEE_ZYDKzwHFmh6YpiIDigIpYbqfN5FHYLf3W2g43x7ZpEXw21aEsrhZ1JyzwllUlo0qWjMgqrMXruIsmfAp5mRJUTdDg90GIW6CRpl9r9hdeax5iO_xBb_5ux4rsgdYzYo1DnD7gD5W1oNE-vqk4tWpLUpViu3x2i61tw735yFBikn4KkMkiVZ_ypD-fW-eXPCxQBPOElnGvzV1JNGOxFXuOjfFHP"/>
+<div class="absolute bottom-3 left-4 z-20">
+<p class="text-[10px] font-bold text-primary uppercase tracking-widest">Network Location</p>
+<p class="text-sm font-semibold text-white">Zone B-12 / Rack 4</p>
+</div>
+</div>
+</main>
+<!-- Bottom Tool Bar -->
+<nav class="fixed bottom-0 left-0 right-0 bg-background-light/90 dark:bg-background-dark/90 backdrop-blur-lg border-t border-slate-200 dark:border-primary/10 px-6 py-3 pb-8 flex justify-around items-center max-w-md mx-auto z-50">
+<button class="flex flex-col items-center gap-1 text-primary">
+<span class="material-icons">info</span>
+<span class="text-[10px] font-medium">Details</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons">history</span>
+<span class="text-[10px] font-medium">Logs</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons">notifications</span>
+<span class="text-[10px] font-medium">Alerts</span>
+</button>
+<button class="flex flex-col items-center gap-1 text-slate-400 hover:text-primary transition-colors">
+<span class="material-icons">settings</span>
+<span class="text-[10px] font-medium">Config</span>
+</button>
+</nav>
+</body></html>
