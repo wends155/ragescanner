@@ -2,6 +2,7 @@
 
 ## 🏗️ Scope
 *   **Files analyzed:** [List absolute paths to files]
+*   **Files to be modified:** [List target files for modification]
 *   **Modules impacted:** [e.g., UI, Async Engine, Network Layer]
 
 ## 🔍 Findings & Impact Analysis
