@@ -24,10 +24,10 @@
 ---
 
 ## 📍 Current State (Recursive Summary)
-*This section is updated by the Architect after every successful implementation.*
 
 ### 🛠️ Recent Changes (Last 3 Cycles)
 1.  **2026-02-11/Baseline:** Initial project audit completed. `context.md` and `GEMINI.md` synchronized with technical stack, scripts, and absolute paths.
+2.  **2026-02-11/Documentation:** Formalized Architect audits with [BLUEPRINT_TEMPLATE.md](file:///c:/Users/WSALIGAN/code/ragescanner/BLUEPRINT_TEMPLATE.md) and documented PowerShell `&&` limitation.
 
 ### 🧩 Active Components & APIs
 * `src/main.rs`: Entry point, logging (`simplelog`), and panic hooks.
@@ -40,21 +40,20 @@
 ### 🛠️ Maintenance & Scripts
 * `Makefile`: Central entry point for `check`, `run`, `test`, `build`, and `verify`.
 * `scripts/verify.sh`: Comprehensive quality gate (Lint + Test + Build).
-* `BLUEPRINT_TEMPLATE.md`: Standardized format for Architect's **Think Phase** audits.
+* `BLUEPRINT_TEMPLATE.md`: Standardized format for Architect's **Think Phase** audits (includes "Files to be modified" scope).
 
 ---
 
 ### 💻 Shell & Tooling Quirks
-* **PowerShell `&&` Limitation:** The default shell on this host (PowerShell) does not support `&&` as a statement separator. Attempting to chain commands with `&&` results in a parser error.
-    * **Solution:** Run commands sequentially in separate tool calls or use `;` (if appropriate for the task logic). In `run_command` tools, always prefer separate calls for multi-stage processes (e.g., `git add` followed by `git commit`).
+* **PowerShell `&&` Limitation:** The default shell on this host (PowerShell) does not support `&&` as a statement separator.
+    * **Solution:** Run commands sequentially in separate tool calls. Do not use `&&` in `run_command` tools.
 
 ---
 
 ## 📜 Decision Log (The "Why")
-*Records why specific paths were taken to prevent circular reasoning in future "Think" phases.*
-
-* **2026-02-11:** Chose **Native Windows GUI (NWG)** over browser-based frameworks to maintain a lightweight, zero-dependency feel.
+* **2026-02-11:** Chose **Native Windows GUI (NWG)** over browser-based frameworks for a zero-dependency feel in user-space.
 * **2026-02-11:** Implemented a **Bridge pattern** to resolve the conflict between NWG's single-threaded loop and Tokio's multi-threaded runtime.
+* **2026-02-11:** Formalized **Architect reports** with a mandatory template to ensure consistent audits, risk assessment, and scope definition (including affected files).
 
 ---
 
@@ -65,12 +64,11 @@
 ---
 
 ## 🧪 Verification Commands
-*Standard commands the Executor must run to pass the Quality Gate.*
-
 ```bash
-# Linting & Verification
+# Full Quality Gate
 make verify
 
-# Manual Check
-cargo fmt -- --check && cargo clippy -- -D warnings
+# Manual Lint Check (Sequential)
+cargo fmt -- --check
+cargo clippy -- -D warnings
 ```
