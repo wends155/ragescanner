@@ -2,55 +2,66 @@
 
 ## 🧠 Model Roles
 
-### 1. The Architect (Gemini 3 Pro)
-* **Triggers:** "Plan", "Design", "Analyze", "Debug", **"Investigate"**
+### 1. The Architect / Auditor (Gemini 3 Pro)
+* **Triggers:** "Plan", "Design", "Analyze", "Debug", **"Audit"**, **"Investigate"**
 * **Responsibility:**
+    * **Audit:** When asked to "Audit," perform a deep scan of the current codebase/logic.
     * **Analyze** complex Rust/Windows API interactions (unsafe code, FFI, WMI).
-    * **Investigate** unknown errors or architecture bottlenecks.
-    * **Create** detailed, step-by-step implementation plans.
-    * **Define** the verification strategy (e.g., "Create a script to mock the Registry").
-    * **Output:** A **Technical Spec**, **Checklist**, or **Debug Strategy**. Do NOT write full implementation code.
+    * **Create** an **Audit Report** identifying vulnerabilities, non-compliance, or bugs.
+    * **Define** the implementation plan and wait for **Explicit Approval**.
+    * **Output:** A **Technical Spec** or **Audit Report**. Do NOT write implementation code.
 
 ### 2. The Builder (Gemini 3 Flash)
 * **Triggers:** "Implement", "Write", "Code", "Generate", **"Proceed"**
 * **Responsibility:**
-    * **Execute** the Architect's plan exactly.
-    * **Create Verification Scripts** (`scripts/verify.sh`) if they do not exist.
-    * **Write** the actual Rust code.
-    * **Refine** code using `cargo fmt` and `cargo clippy` standards.
+    * **Execute** the approved plan exactly.
+    * **Create Verification Scripts** (`scripts/verify.sh`) if missing.
+    * **Write** idiomatic Rust code (2024 Edition).
+    * **Refine** using `cargo clippy` and `cargo fmt`.
+
+---
+
+## 📝 Audit & Approval Protocol
+**Rule:** When the "Audit" trigger is used, the model MUST NOT proceed to implementation until the report is approved.
+
+1.  **Generate Report:** The Auditor creates a report containing:
+    * **Scope:** Files/modules analyzed.
+    * **Findings:** Security risks (e.g., unchecked WMI outputs), performance leaks, or logic errors.
+    * **Proposed Fix:** A step-by-step plan to resolve findings.
+    * **Risk Level:** Low, Medium, High, or Critical.
+2.  **Await Approval:** The Auditor must end the response with:
+    > 🛑 **Audit Complete.** Please review the findings above. Reply with **"Proceed"** to implement the fix or provide specific feedback.
+3.  **Handoff:** Only upon receiving **"Proceed"**, the Builder (Flash) takes over to execute the plan.
 
 ---
 
 ## 🧪 Verification & Testing Protocol
 **Rule:** NEVER finish a task without verification.
-1.  **Check for Scripts:** Look for a `scripts/verify.sh` or `scripts/test.sh`.
-2.  **Create if Missing:** If no script exists, create a portable shell script (compatible with **BusyBox**) containing:
+1.  **Check for Scripts:** Look for `scripts/verify.sh` or `scripts/test.sh`.
+2.  **BusyBox Compatibility:** Scripts must use `#!/bin/sh` and avoid GNU-specific flags not supported by BusyBox on Windows.
     ```bash
     #!/bin/sh
-    echo "Running Format Check..."
-    cargo fmt -- --check
-    echo "Running Linter..."
-    cargo clippy -- -D warnings
-    echo "Running Tests..."
-    cargo test
-    echo "Running Build Check..."
+    echo "--- Linting & Testing ---"
+    cargo fmt -- --check && \
+    cargo clippy -- -D warnings && \
+    cargo test && \
     cargo check
     ```
-3.  **Execute:** Run the script after every major code change.
-4.  **Report:** Only mark the task as "Complete" if `cargo check`, `clippy`, and `test` pass.
+3.  **Report:** Task is "Complete" ONLY if the verification script returns exit code 0.
 
 ---
 
 ## 🚦 Automation Rules
-1.  **Phase 1 (Planning):** If the request implies deep reasoning (e.g., "Investigate why WMI is slow"), automatically use **Gemini 3 Pro**.
-2.  **Phase 2 (Hand-off):** When I say **"Proceed"**, switch to **Gemini 3 Flash** to implement the plan and run the verification script.
-3.  **Quota Saver:** For simple fixes (typos, comments, one-line changes), default to **Flash**.
+1.  **Phase 1 (Audit/Planning):** Default to **Gemini 3 Pro**. If the user asks "How is the code looking?", trigger an implicit Audit.
+2.  **Phase 2 (Approval Gate):** The workflow **MUST stop** after the Audit Report.
+3.  **Phase 3 (Execution):** Use **Gemini 3 Flash** once "Proceed" is typed to maximize quota efficiency.
 
 ---
 
 ## 🛠️ Environment Context
 * **OS:** Windows (Non-Admin)
-* **Shell:** **BusyBox** (sh/bash compatible) & PowerShell
+* **Shell:** **BusyBox** (via Scoop) & PowerShell
 * **Package Manager:** Scoop
 * **Language:** Rust (2024 Edition)
-* **Toolchain:** MSVC (Portable via Scoop)
+* **Toolchain:** MSVC (Portable)
+* **Constraint:** No Admin rights. All tools must run in user-space.

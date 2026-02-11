@@ -1,0 +1,7 @@
+/target
+/ragescanner.log
+/check_output.txt
+/clippy_full.txt
+/clippy_output.txt
+**/*.rs.bk
+.DS_Store

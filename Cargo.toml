@@ -1,0 +1,20 @@
+[package]
+name = "ragescanner"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+native-windows-gui = "1.0.13"
+native-windows-derive = "1.0.3"
+tokio = { version = "1.36", features = ["rt-multi-thread", "macros", "sync", "time", "net"] }
+windows = { version = "0.52", features = ["Win32_NetworkManagement_IpHelper", "Win32_Foundation", "Win32_Networking_WinSock", "Win32_UI_WindowsAndMessaging"] }
+mac_oui = { version = "0.4", features = ["with-db"] }
+dns-lookup = "2.0"
+log = "0.4"
+simplelog = "0.12"
+crossbeam-channel = "0.5"
+serde = { version = "1.0", features = ["derive"] }
+lazy_static = "1.4"
+
+[dev-dependencies]
+rand = "0.8"
