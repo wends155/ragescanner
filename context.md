@@ -48,6 +48,12 @@
 
 ---
 
+### 💻 Shell & Tooling Quirks
+* **PowerShell `&&` Limitation:** The default shell on this host (PowerShell) does not support `&&` as a statement separator. Attempting to chain commands with `&&` results in a parser error.
+    * **Solution:** Run commands sequentially in separate tool calls or use `;` (if appropriate for the task logic). In `run_command` tools, always prefer separate calls for multi-stage processes (e.g., `git add` followed by `git commit`).
+
+---
+
 ## 📜 Decision Log (The "Why")
 *Records why specific paths were taken to prevent circular reasoning in future "Think" phases.*
 
