@@ -17,46 +17,42 @@ pub struct RageScannerApp {
     #[nwg_events( OnWindowClose: [RageScannerApp::exit] )]
     window: nwg::Window,
 
-    #[nwg_layout(parent: window, spacing: 5)]
+    #[nwg_layout(parent: window, spacing: 3)]
     layout: nwg::GridLayout,
 
     // Row 0: Start IP
     #[nwg_control(text: "Start IP:", h_align: nwg::HTextAlign::Right)]
-    #[nwg_layout_item(layout: layout, col: 0, row: 0)]
+    #[nwg_layout_item(layout: layout, col: 0, row: 0, row_span: 2)]
     label_start: nwg::Label,
 
     #[nwg_control(text: "192.168.1.1")]
-    #[nwg_layout_item(layout: layout, col: 1, row: 0)]
+    #[nwg_layout_item(layout: layout, col: 1, row: 0, row_span: 2)]
     start_ip_input: nwg::TextInput,
 
     // Row 0: End IP
     #[nwg_control(text: "End IP:", h_align: nwg::HTextAlign::Right)]
-    #[nwg_layout_item(layout: layout, col: 2, row: 0)]
+    #[nwg_layout_item(layout: layout, col: 2, row: 0, row_span: 2)]
     label_end: nwg::Label,
 
     #[nwg_control(text: "255")]
-    #[nwg_layout_item(layout: layout, col: 3, row: 0)]
+    #[nwg_layout_item(layout: layout, col: 3, row: 0, row_span: 2)]
     end_ip_input: nwg::TextInput,
 
-    // Row 0: Scan Button (Shifted to Col 4, need to check grid size)
-    // Adjusting grid: Col 0 (Label), Col 1 (Input), Col 2 (Label), Col 3 (Input), Col 4 (Btn)
-    // Grid layout needs to be flexible. Let's try to fit in 4 cols if possible or expand.
-    // Let's use 5 columns.
     #[nwg_control(text: "Scan")]
-    #[nwg_layout_item(layout: layout, col: 4, row: 0)]
+    #[nwg_layout_item(layout: layout, col: 4, row: 0, row_span: 2)]
     #[nwg_events( OnButtonClick: [RageScannerApp::start_scan] )]
     scan_btn: nwg::Button,
 
     #[nwg_control(list_style: nwg::ListViewStyle::Detailed)]
-    #[nwg_layout_item(layout: layout, col: 0, row: 1, col_span: 5, row_span: 3)]
+    #[nwg_layout_item(layout: layout, col: 0, row: 2, col_span: 5, row_span: 16)]
     list_view: nwg::ListView,
 
     #[nwg_control(range: 0..100, pos: 0)]
-    #[nwg_layout_item(layout: layout, col: 0, row: 4, col_span: 5)]
+    #[nwg_layout_item(layout: layout, col: 0, row: 18, col_span: 5)]
     progress_bar: nwg::ProgressBar,
 
     #[nwg_control(text: "Ready")]
-    #[nwg_layout_item(layout: layout, col: 0, row: 5, col_span: 5)]
+    #[nwg_layout_item(layout: layout, col: 0, row: 19, col_span: 5)]
     status_bar: nwg::StatusBar,
 
     #[nwg_control]
