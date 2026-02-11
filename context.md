@@ -38,13 +38,9 @@
 * `src/types.rs`: Common data structures.
 
 ### 🛠️ Maintenance & Scripts
-* `Makefile`:
-    * `make check`: Runs `cargo check`.
-    * `make run`: Starts the application.
-    * `make test`: Runs unit tests.
-    * `make build`: Creates a release binary.
-    * `make verify`: Executes the quality gate script.
-* `scripts/verify.sh`: Comprehensive linting, formatting, and testing script.
+* `Makefile`: Central entry point for `check`, `run`, `test`, `build`, and `verify`.
+* `scripts/verify.sh`: Comprehensive quality gate (Lint + Test + Build).
+* `BLUEPRINT_TEMPLATE.md`: Standardized format for Architect's **Think Phase** audits.
 
 ---
 
