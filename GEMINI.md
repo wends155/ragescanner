@@ -65,3 +65,15 @@
 * **Language:** Rust (2024 Edition)
 * **Toolchain:** MSVC (Portable)
 * **Constraint:** No Admin rights. All tools must run in user-space.
+
+---
+
+## 🛠️ Project Stack & Architecture
+* **UI Framework:** `native-windows-gui` (NWG) - Event-driven Windows GUI.
+* **Async Runtime:** `tokio` - Asynchronous task management.
+* **Windows API:** `windows-rs` - Direct Win32 bindings.
+* **Network Utils:** `mac_oui` (MAC vendor lookup), `dns-lookup`.
+* **Flow Pattern:** **Bridge Pattern** orchestrating thread-safe communication between NWG (Main Thread) and Tokio (Worker Threads) via `crossbeam-channel` and `tokio::mpsc`.
+* **Maintenance:**
+    - `Makefile`: Central entry point for commands (`make check`, `make verify`).
+    - `scripts/verify.sh`: Integrated quality gate.
