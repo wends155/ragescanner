@@ -5,3 +5,4 @@
 /clippy_output.txt
 **/*.rs.bk
 .DS_Store
+/GEMINI.md
