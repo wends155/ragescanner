@@ -1,12 +1,8 @@
 #![cfg_attr(not(test), windows_subsystem = "windows")]
 
-mod bridge;
-mod net;
-mod scanner;
-mod types;
 mod ui;
 
-use bridge::Bridge;
+use ragescanner::bridge::Bridge;
 use log::LevelFilter;
 use simplelog::{Config, WriteLogger};
 use std::fs::File;
@@ -15,8 +11,14 @@ use windows::Win32::UI::WindowsAndMessaging::{MessageBoxA, MB_ICONERROR, MB_OK};
 
 fn main() {
     // 1. Initialize Logging
+    let log_level = if cfg!(debug_assertions) {
+        LevelFilter::Debug
+    } else {
+        LevelFilter::Error
+    };
+
     let _ = WriteLogger::init(
-        LevelFilter::Debug,
+        log_level,
         Config::default(),
         File::create("ragescanner.log")
             .unwrap_or_else(|_| File::create("ragescanner.err").unwrap()),

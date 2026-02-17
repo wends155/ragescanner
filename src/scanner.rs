@@ -1,3 +1,8 @@
+//! Async scan engine with semaphore-controlled concurrency.
+//!
+//! The [`Scanner`] struct orchestrates per-IP scanning (ping, ARP, DNS,
+//! port scan) and streams results via a Tokio channel.
+
 use crate::net::NetworkProvider;
 use crate::types::{BridgeMessage, GError, ScanResult, ScanStatus};
 use std::net::Ipv4Addr;
@@ -5,6 +10,7 @@ use std::sync::Arc;
 use tokio::sync::mpsc::Sender;
 use tokio::sync::Semaphore;
 
+/// Async scan engine that probes IPs for reachability, MAC, hostname, and open ports.
 pub struct Scanner {
     net_utils: Arc<dyn NetworkProvider>,
     tx_bridge: Sender<BridgeMessage>,
@@ -17,6 +23,7 @@ const COMMON_PORTS: &[u16] = &[
 const MAX_CONCURRENT_TASKS: usize = 100;
 
 impl Scanner {
+    /// Creates a new scanner with the given network provider and result channel.
     pub fn new(net_utils: Arc<dyn NetworkProvider>, tx_bridge: Sender<BridgeMessage>) -> Self {
         Self {
             net_utils,
@@ -24,6 +31,10 @@ impl Scanner {
         }
     }
 
+    /// Scans a contiguous range of IPv4 addresses.
+    ///
+    /// Sends [`BridgeMessage::ScanUpdate`], [`BridgeMessage::Progress`], and
+    /// [`BridgeMessage::ScanComplete`] through the channel.
     pub async fn scan_range(&self, start_ip: Ipv4Addr, end_ip: Ipv4Addr) {
         let start_u32: u32 = u32::from(start_ip);
         let end_u32: u32 = u32::from(end_ip);

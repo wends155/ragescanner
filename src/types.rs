@@ -1,9 +1,19 @@
+//! Core types shared across the scanner library.
+//!
+//! Defines [`GError`], [`ScanStatus`], [`ScanResult`], and [`BridgeMessage`].
+
 use std::fmt;
 use std::net::Ipv4Addr;
 
+/// Application-wide error type.
+///
+/// Captures both Win32 API errors (with numeric code) and internal
+/// application-level errors.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum GError {
+    /// A Win32 API error with its error code and descriptive message.
     Win32(u32, String),
+    /// An application-level error with a descriptive message.
     Internal(String),
 }
 
@@ -16,6 +26,7 @@ impl fmt::Display for GError {
     }
 }
 
+/// Status of a specific IP scan.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub enum ScanStatus {
     Scanning,
@@ -35,6 +46,7 @@ impl fmt::Display for ScanStatus {
     }
 }
 
+/// Result of scanning a single IP address.
 #[derive(Debug, Clone)]
 pub struct ScanResult {
     pub ip: Ipv4Addr,
@@ -58,6 +70,7 @@ impl ScanResult {
     }
 }
 
+/// Messages exchanged between the UI and the scanner bridge.
 #[derive(Debug, Clone)]
 pub enum BridgeMessage {
     StartScan(String),

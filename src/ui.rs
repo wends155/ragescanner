@@ -1,4 +1,4 @@
-use crate::types::{BridgeMessage, ScanResult};
+use ragescanner::types::{BridgeMessage, ScanResult};
 use log::error;
 use native_windows_derive::NwgUi;
 use native_windows_gui as nwg;

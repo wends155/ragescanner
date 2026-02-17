@@ -1,3 +1,8 @@
+//! UI↔Scanner bridge orchestrator.
+//!
+//! [`Bridge`] spawns a background thread with a Tokio runtime and provides
+//! channel-based communication for any frontend (GUI, TUI, CLI).
+
 use crate::net::NetUtils;
 use crate::scanner::Scanner;
 use crate::types::{BridgeMessage, GError};
@@ -9,12 +14,25 @@ use std::thread;
 use tokio::runtime::Runtime;
 use tokio::sync::mpsc::{channel as tokio_channel, Sender as TokioSender};
 
+/// Orchestrator that bridges a frontend to the async scanner.
+///
+/// Spawns a background thread with a Tokio runtime. Commands are sent via
+/// [`cmd_tx`](Bridge::cmd_tx) and results received via [`ui_rx`](Bridge::ui_rx).
 pub struct Bridge {
+    /// Receiver for messages directed to the UI.
     pub ui_rx: Receiver<BridgeMessage>,
+    /// Sender for commands directed to the scanner.
     pub cmd_tx: TokioSender<BridgeMessage>,
 }
 
+impl Default for Bridge {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Bridge {
+    /// Creates a new bridge, spawning the background scanner thread.
     pub fn new() -> Self {
         let (ui_tx, ui_rx) = unbounded::<BridgeMessage>();
         let (cmd_tx, mut cmd_rx) = tokio_channel::<BridgeMessage>(32);

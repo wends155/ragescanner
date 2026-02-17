@@ -1,3 +1,8 @@
+//! Network primitives for IP scanning on Windows.
+//!
+//! Provides the [`NetworkProvider`] trait and the [`NetUtils`] implementation
+//! using Win32 APIs (`IcmpSendEcho`, `SendARP`) and Tokio for port scanning.
+
 use crate::types::GError;
 use lazy_static::lazy_static;
 use std::ffi::c_void;
@@ -41,18 +46,31 @@ impl Drop for SafeHandle {
 
 /// Trait to abstract network operations, enabling mocking for tests.
 pub trait NetworkProvider: Send + Sync {
+    /// Sends an ICMP echo request. Returns `true` if the host responds.
     fn ping(&self, ip: Ipv4Addr) -> Result<bool, GError>;
+    /// Resolves the MAC address via ARP. Returns `None` if unreachable.
     fn resolve_mac(&self, ip: Ipv4Addr) -> Result<Option<String>, GError>;
+    /// Performs reverse DNS lookup. Returns `None` if no hostname found.
     fn resolve_hostname(&self, ip: Ipv4Addr) -> Result<Option<String>, GError>;
+    /// Looks up the OUI vendor name for a given MAC address.
     fn resolve_vendor(&self, mac: &str) -> Option<String>;
+    /// Probes a TCP port. Returns `true` if the port is open.
     fn scan_port(&self, ip: Ipv4Addr, port: u16) -> BoxFuture<'_, bool>;
 }
 
+/// Implementation of [`NetworkProvider`] using standard Windows APIs.
 pub struct NetUtils;
 
 impl NetUtils {
+    /// Creates a new instance of [`NetUtils`].
     pub fn new() -> Self {
         Self
+    }
+}
+
+impl Default for NetUtils {
+    fn default() -> Self {
+        Self::new()
     }
 }
 
@@ -86,7 +104,7 @@ impl NetworkProvider for NetUtils {
                 Ok(Some(mac_str))
             } else {
                 // Should not happen for Ethernet, but handle safely
-                log::warn!(
+                log::error!(
                     "SendARP succeeded but returned invalid mac_len: {}",
                     mac_len
                 );
@@ -96,7 +114,7 @@ impl NetworkProvider for NetUtils {
             // 67 = ERROR_BAD_NET_NAME (Host not found), 1168 = ERROR_NOT_FOUND
             Ok(None)
         } else {
-            log::warn!("SendARP failed for {} with error code: {}", ip, res);
+            log::error!("SendARP failed for {} with error code: {}", ip, res);
             Err(GError::Win32(res, "SendARP failed".to_string()))
         }
     }
@@ -178,10 +196,13 @@ mod tests {
     }
 }
 
-#[cfg(test)]
+/// Mock implementation of [`NetworkProvider`] for deterministic testing.
+///
+/// Available when the `test-support` feature is enabled.
+#[cfg(any(test, feature = "test-support"))]
 pub struct MockNet;
 
-#[cfg(test)]
+#[cfg(any(test, feature = "test-support"))]
 impl NetworkProvider for MockNet {
     fn ping(&self, ip: Ipv4Addr) -> Result<bool, GError> {
         if ip == Ipv4Addr::new(192, 168, 1, 1) {
