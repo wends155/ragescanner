@@ -11,13 +11,22 @@
 //! ```no_run
 //! use ragescanner::bridge::Bridge;
 //! use ragescanner::types::BridgeMessage;
+//! use std::net::Ipv4Addr;
 //!
 //! let bridge = Bridge::new();
-//! bridge.cmd_tx.blocking_send(BridgeMessage::StartScan("192.168.1.1-255".into())).unwrap();
+//! let start = Ipv4Addr::new(192, 168, 1, 1);
+//! let end = Ipv4Addr::new(192, 168, 1, 255);
+//!
+//! bridge.cmd_tx.blocking_send(BridgeMessage::StartScanRange(start, end)).unwrap();
+//!
 //! while let Ok(msg) = bridge.ui_rx.recv() {
 //!     match msg {
 //!         BridgeMessage::ScanUpdate(r) => println!("{}: {}", r.ip, r.status),
 //!         BridgeMessage::ScanComplete => break,
+//!         BridgeMessage::ScanCancelled => {
+//!             println!("Scan was stopped.");
+//!             break;
+//!         }
 //!         _ => {}
 //!     }
 //! }

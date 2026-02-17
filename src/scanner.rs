@@ -34,8 +34,19 @@ impl Scanner {
     /// Scans a contiguous range of IPv4 addresses.
     ///
     /// Sends [`BridgeMessage::ScanUpdate`], [`BridgeMessage::Progress`], and
-    /// [`BridgeMessage::ScanComplete`] through the channel.
-    pub async fn scan_range(&self, start_ip: Ipv4Addr, end_ip: Ipv4Addr) {
+    /// [`BridgeMessage::ScanComplete`] (or [`BridgeMessage::ScanCancelled`]) through the channel.
+    ///
+    /// # Errors
+    ///
+    /// System-level errors (e.g. Win32 API failures) are not returned directly. Instead:
+    /// - Range-level errors are sent via [`BridgeMessage::Error`].
+    /// - Individual IP failures are sent via [`BridgeMessage::ScanUpdate`] with [`ScanStatus::SystemError`](crate::types::ScanStatus::SystemError).
+    pub async fn scan_range(
+        &self,
+        start_ip: Ipv4Addr,
+        end_ip: Ipv4Addr,
+        cancel_token: tokio_util::sync::CancellationToken,
+    ) {
         let start_u32: u32 = u32::from(start_ip);
         let end_u32: u32 = u32::from(end_ip);
 
@@ -61,6 +72,12 @@ impl Scanner {
         let mut tasks = tokio::task::JoinSet::new();
 
         for (idx, i) in (start_u32..=end_u32).enumerate() {
+            // Check for cancellation before spawning each IP task
+            if cancel_token.is_cancelled() {
+                log::info!("Scan cancelled by user.");
+                break;
+            }
+
             let ip = Ipv4Addr::from(i);
             let semaphore_clone = semaphore.clone();
             let permit_res = semaphore_clone.acquire_owned().await;
@@ -173,8 +190,14 @@ impl Scanner {
         }
 
         while tasks.join_next().await.is_some() {}
-        log::info!("Scan complete.");
-        let _ = self.tx_bridge.send(BridgeMessage::ScanComplete).await;
+        
+        if cancel_token.is_cancelled() {
+            log::info!("Scan completed (Cancelled).");
+            let _ = self.tx_bridge.send(BridgeMessage::ScanCancelled).await;
+        } else {
+            log::info!("Scan completed (Finished).");
+            let _ = self.tx_bridge.send(BridgeMessage::ScanComplete).await;
+        }
     }
 }
 
@@ -191,8 +214,9 @@ mod tests {
 
         let start = Ipv4Addr::new(192, 168, 1, 1);
         let end = Ipv4Addr::new(192, 168, 1, 1); // Single IP
+        let token = tokio_util::sync::CancellationToken::new();
 
-        scanner.scan_range(start, end).await;
+        scanner.scan_range(start, end, token).await;
 
         let mut found_online = false;
         let mut found_progress = false;

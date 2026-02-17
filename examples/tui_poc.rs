@@ -7,11 +7,12 @@ fn main() {
     
     let bridge = Bridge::new();
     
-    // Start scan for a small local range
-    let range = "127.0.0.1-5";
-    println!("Scanning range: {}", range);
+    // Start scan for a small local range using the typed API
+    let start = std::net::Ipv4Addr::new(127, 0, 0, 1);
+    let end = std::net::Ipv4Addr::new(127, 0, 0, 5);
+    println!("Scanning range: {}-{}", start, end);
     
-    if let Err(e) = bridge.cmd_tx.blocking_send(BridgeMessage::StartScan(range.to_string())) {
+    if let Err(e) = bridge.cmd_tx.blocking_send(BridgeMessage::StartScanRange(start, end)) {
         eprintln!("Failed to start scan: {}", e);
         return;
     }
@@ -28,6 +29,10 @@ fn main() {
             }
             BridgeMessage::ScanComplete => {
                 println!("\nScan Complete!");
+                break;
+            }
+            BridgeMessage::ScanCancelled => {
+                println!("\nScan Cancelled!");
                 break;
             }
             BridgeMessage::Error(e) => {

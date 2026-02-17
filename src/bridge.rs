@@ -33,6 +33,9 @@ impl Default for Bridge {
 
 impl Bridge {
     /// Creates a new bridge, spawning the background scanner thread.
+    ///
+    /// The bridge starts a Tokio runtime in a dedicated OS thread to handle
+    /// asynchronous networking tasks while the caller remains responsive.
     pub fn new() -> Self {
         let (ui_tx, ui_rx) = unbounded::<BridgeMessage>();
         let (cmd_tx, mut cmd_rx) = tokio_channel::<BridgeMessage>(32);
@@ -63,19 +66,49 @@ impl Bridge {
                 let net_utils = Arc::new(NetUtils::new());
                 let scanner = Arc::new(Scanner::new(net_utils, scanner_tx));
 
+                let mut current_cancel_token: Option<tokio_util::sync::CancellationToken> = None;
+
                 while let Some(msg) = cmd_rx.recv().await {
-                    if let BridgeMessage::StartScan(range) = msg {
-                        match Self::parse_range(&range) {
-                            Ok((start, end)) => {
-                                let scanner_clone = scanner.clone();
-                                tokio::spawn(async move {
-                                    scanner_clone.scan_range(start, end).await;
-                                });
+                    match msg {
+                        BridgeMessage::StartScan(range) => {
+                            if let Some(token) = current_cancel_token.take() {
+                                token.cancel();
                             }
-                            Err(e) => {
-                                let _ = ui_tx.send(BridgeMessage::Error(GError::Internal(e)));
+
+                            let token = tokio_util::sync::CancellationToken::new();
+                            current_cancel_token = Some(token.clone());
+
+                            match Self::parse_range(&range) {
+                                Ok((start, end)) => {
+                                    let scanner_clone = scanner.clone();
+                                    tokio::spawn(async move {
+                                        scanner_clone.scan_range(start, end, token).await;
+                                    });
+                                }
+                                Err(e) => {
+                                    let _ = ui_tx.send(BridgeMessage::Error(GError::Internal(e)));
+                                }
                             }
                         }
+                        BridgeMessage::StartScanRange(start, end) => {
+                            if let Some(token) = current_cancel_token.take() {
+                                token.cancel();
+                            }
+
+                            let token = tokio_util::sync::CancellationToken::new();
+                            current_cancel_token = Some(token.clone());
+
+                            let scanner_clone = scanner.clone();
+                            tokio::spawn(async move {
+                                scanner_clone.scan_range(start, end, token).await;
+                            });
+                        }
+                        BridgeMessage::StopScan => {
+                            if let Some(token) = current_cancel_token.take() {
+                                token.cancel();
+                            }
+                        }
+                        _ => {}
                     }
                 }
             });

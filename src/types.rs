@@ -74,8 +74,15 @@ impl ScanResult {
 #[derive(Debug, Clone)]
 pub enum BridgeMessage {
     StartScan(String),
+    /// Start a scan using typed IP addresses (no string parsing needed).
+    StartScanRange(Ipv4Addr, Ipv4Addr),
+    /// Request cancellation of the currently running scan.
+    StopScan,
     ScanUpdate(ScanResult),
+    /// Sent when a scan is completed successfully.
     ScanComplete,
+    /// Sent when a scan is cancelled before completion.
+    ScanCancelled,
     Progress(u8),
     Error(GError),
 }
