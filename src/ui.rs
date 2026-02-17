@@ -1,11 +1,11 @@
-use ragescanner::types::{BridgeMessage, ScanResult};
 use log::error;
 use native_windows_derive::NwgUi;
 use native_windows_gui as nwg;
 use nwg::NativeUi;
+use ragescanner::types::{BridgeMessage, ScanResult};
 use std::cell::RefCell;
-use std::sync::atomic::{AtomicBool, Ordering};
 use std::sync::Arc;
+use std::sync::atomic::{AtomicBool, Ordering};
 use tokio::sync::mpsc::Sender as TokioSender;
 
 #[derive(Default, NwgUi)]
@@ -280,15 +280,17 @@ pub fn run_app(
     let ui_notice = app.ui_notice.sender();
     let rx = app.ui_rx.as_ref().unwrap().clone();
 
-    std::thread::spawn(move || loop {
-        if !rx.is_empty() {
-            ui_notice.notice();
-            // Rate-limit the pump to prevent flooding the Windows Message Queue.
-            // This allows the channel to buffer messages naturally.
-            std::thread::sleep(std::time::Duration::from_millis(50));
-        } else {
-            // Idle poll to check for new messages
-            std::thread::sleep(std::time::Duration::from_millis(10));
+    std::thread::spawn(move || {
+        loop {
+            if !rx.is_empty() {
+                ui_notice.notice();
+                // Rate-limit the pump to prevent flooding the Windows Message Queue.
+                // This allows the channel to buffer messages naturally.
+                std::thread::sleep(std::time::Duration::from_millis(50));
+            } else {
+                // Idle poll to check for new messages
+                std::thread::sleep(std::time::Duration::from_millis(10));
+            }
         }
     });
 

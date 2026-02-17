@@ -6,13 +6,13 @@
 use crate::net::NetUtils;
 use crate::scanner::Scanner;
 use crate::types::{BridgeMessage, GError};
-use crossbeam_channel::{unbounded, Receiver};
+use crossbeam_channel::{Receiver, unbounded};
 use std::net::Ipv4Addr;
 use std::str::FromStr;
 use std::sync::Arc;
 use std::thread;
 use tokio::runtime::Runtime;
-use tokio::sync::mpsc::{channel as tokio_channel, Sender as TokioSender};
+use tokio::sync::mpsc::{Sender as TokioSender, channel as tokio_channel};
 
 /// Orchestrator that bridges a frontend to the async scanner.
 ///

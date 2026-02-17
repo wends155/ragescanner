@@ -7,8 +7,8 @@ use crate::net::NetworkProvider;
 use crate::types::{BridgeMessage, GError, ScanResult, ScanStatus};
 use std::net::Ipv4Addr;
 use std::sync::Arc;
-use tokio::sync::mpsc::Sender;
 use tokio::sync::Semaphore;
+use tokio::sync::mpsc::Sender;
 
 /// Async scan engine that probes IPs for reachability, MAC, hostname, and open ports.
 pub struct Scanner {
@@ -71,7 +71,7 @@ impl Scanner {
         let semaphore = Arc::new(Semaphore::new(MAX_CONCURRENT_TASKS));
         let mut tasks = tokio::task::JoinSet::new();
 
-        for (idx, i) in (start_u32..=end_u32).enumerate() {
+        for i in start_u32..=end_u32 {
             // Check for cancellation before spawning each IP task
             if cancel_token.is_cancelled() {
                 log::info!("Scan cancelled by user.");
@@ -98,7 +98,6 @@ impl Scanner {
 
             let net_utils = self.net_utils.clone();
             let tx = self.tx_bridge.clone();
-            let current_count = idx as u32 + 1;
 
             tasks.spawn(async move {
                 let _permit = permit;
@@ -182,15 +181,16 @@ impl Scanner {
                         let _ = tx.send(BridgeMessage::ScanUpdate(result)).await;
                     }
                 }
-
-                // Progress Update
-                let progress = (current_count as f32 / total_ips as f32 * 100.0) as u8;
-                let _ = tx.send(BridgeMessage::Progress(progress)).await;
             });
         }
 
-        while tasks.join_next().await.is_some() {}
-        
+        let mut completed: u32 = 0;
+        while tasks.join_next().await.is_some() {
+            completed += 1;
+            let progress = (completed as f32 / total_ips as f32 * 100.0) as u8;
+            let _ = self.tx_bridge.send(BridgeMessage::Progress(progress)).await;
+        }
+
         if cancel_token.is_cancelled() {
             log::info!("Scan completed (Cancelled).");
             let _ = self.tx_bridge.send(BridgeMessage::ScanCancelled).await;

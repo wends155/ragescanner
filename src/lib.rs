@@ -35,4 +35,5 @@
 pub mod bridge;
 pub mod net;
 pub mod scanner;
+pub mod tui;
 pub mod types;

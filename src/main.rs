@@ -2,12 +2,12 @@
 
 mod ui;
 
-use ragescanner::bridge::Bridge;
 use log::LevelFilter;
+use ragescanner::bridge::Bridge;
 use simplelog::{Config, WriteLogger};
 use std::fs::File;
 use std::panic;
-use windows::Win32::UI::WindowsAndMessaging::{MessageBoxA, MB_ICONERROR, MB_OK};
+use windows::Win32::UI::WindowsAndMessaging::{MB_ICONERROR, MB_OK, MessageBoxA};
 
 fn main() {
     // 1. Initialize Logging
