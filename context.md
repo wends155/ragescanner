@@ -26,15 +26,15 @@
 ## 📍 Current State (Recursive Summary)
 
 ### 🛠️ Recent Changes (Last 3 Cycles)
-1.  **2026-02-11/Documentation:** Formalized Architect audits with [BLUEPRINT_TEMPLATE.md](file:///c:/Users/WSALIGAN/code/ragescanner/BLUEPRINT_TEMPLATE.md) and documented PowerShell `&&` limitation.
-2.  **2026-02-17/Finalization:** Created [architecture.md](file:///c:/Users/WSALIGAN/code/ragescanner/architecture.md) as the Technical Source of Truth. Updated Project Edition to 2024. Ignored `GEMINI.md` via `.gitignore`.
-3.  **2026-02-17/Refactor:** Extracted core logic to `src/lib.rs`. Configured profile-aware logging (`Debug` for dev, `Error` for release). Promoted ARP anomalies to `error!`.
+1.  **2026-02-17/TUI:** Implemented the `rageping` TUI binary using `ratatui` and `crossterm`. Followed provided mockups and added (c) WSALIGAN attribution.
+2.  **2026-02-17/Fixes:** Refactored `Scanner` progress to be monotonic (task completion count) and fixed UI cursor misalignment (+9 offset).
+3.  **2026-02-17/Refactor:** Extracted input handling to `App::on_key` and added 8 unit tests in `app.rs`. Verified via `sh scripts/verify.sh`.
 
 ### 🧩 Active Components & APIs
-* `src/lib.rs`: Library entry point, re-exports `bridge`, `net`, `scanner`, and `types`.
-* `src/main.rs`: Binary entry point, handles logging initialization and GUI launch.
-* (Other components... updated to use `ragescanner` crate)
-* `examples/tui_poc.rs`: Proof-of-concept CLI consumption of the library.
+* `src/lib.rs`: Library entry point; re-exports `tui`, `bridge`, `net`, `scanner`, and `types`.
+* `src/tui/`: Full TUI implementation (`app`, `event`, `theme`, `ui`).
+* `src/bin/tui.rs`: New binary `rageping` for terminal usage.
+* `src/main.rs`: Original NWG GUI binary entry point.
 
 ### 🛠️ Maintenance & Scripts
 * `Makefile`: Central entry point for `check`, `run`, `test`, `build`, and `verify`.
@@ -61,7 +61,7 @@
 
 ## 🚧 Technical Debt & Pending Logic
 * **Known Issues:** None identified in initial audit.
-* **Next Steps:** Implement multi-threaded scanning and real-time UI updates. Build a dedicated TUI application.
+* **Next Steps:** Implement user-configurable port lists and secondary GUIs (e.g., Slint/egui) using the stable library interface.
 
 ---
 
