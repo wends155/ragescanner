@@ -6,7 +6,7 @@
 
 ## 🏗️ System Overview
 * **Goal:** A high-performance, asynchronous IP scanner for Windows built with Rust, NWG, and Tokio.
-* **Core Stack:** Rust 2021/2024, `native-windows-gui`, `tokio`, `windows-rs`.
+* **Core Stack:** Rust 2024, `native-windows-gui`, `tokio`, `windows-rs`.
 * **Architecture Pattern:** Asynchronous GUI Application using a Bridge pattern to decouple NWG (Event-driven UI) from Tokio (Asynchronous Logic).
 
 ---
@@ -28,6 +28,7 @@
 ### 🛠️ Recent Changes (Last 3 Cycles)
 1.  **2026-02-11/Baseline:** Initial project audit completed. `context.md` and `GEMINI.md` synchronized with technical stack, scripts, and absolute paths.
 2.  **2026-02-11/Documentation:** Formalized Architect audits with [BLUEPRINT_TEMPLATE.md](file:///c:/Users/WSALIGAN/code/ragescanner/BLUEPRINT_TEMPLATE.md) and documented PowerShell `&&` limitation.
+3.  **2026-02-17/Finalization:** Created [architecture.md](file:///c:/Users/WSALIGAN/code/ragescanner/architecture.md) as the Technical Source of Truth. Updated Project Edition to 2024. Ignored `GEMINI.md` via `.gitignore`.
 
 ### 🧩 Active Components & APIs
 * `src/main.rs`: Entry point, logging (`simplelog`), and panic hooks.
@@ -54,6 +55,8 @@
 * **2026-02-11:** Chose **Native Windows GUI (NWG)** over browser-based frameworks for a zero-dependency feel in user-space.
 * **2026-02-11:** Implemented a **Bridge pattern** to resolve the conflict between NWG's single-threaded loop and Tokio's multi-threaded runtime.
 * **2026-02-11:** Formalized **Architect reports** with a mandatory template to ensure consistent audits, risk assessment, and scope definition (including affected files).
+* **2026-02-17:** Standardized on **Rust 2024 Edition** across `Cargo.toml` and documentation.
+* **2026-02-17:** Moved **GEMINI.md** to `.gitignore` to keep workflow-specific rules outside the repository while maintaining them locally for agents.
 
 ---
 
