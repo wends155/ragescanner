@@ -86,3 +86,65 @@ pub enum BridgeMessage {
     Progress(u8),
     Error(GError),
 }
+
+/// Well-known port definitions used for scanning.
+///
+/// Each entry is `(port_number, service_label)`.
+pub const COMMON_PORTS: &[(u16, &str)] = &[
+    (21, "FTP"),
+    (22, "SSH"),
+    (23, "Telnet"),
+    (25, "SMTP"),
+    (53, "DNS"),
+    (80, "HTTP"),
+    (110, "POP3"),
+    (135, "RPC/EPMAP"),
+    (139, "NetBIOS"),
+    (443, "HTTPS"),
+    (445, "SMB"),
+    (1433, "MSSQL"),
+    (3306, "MySQL"),
+    (3389, "RDP"),
+    (5432, "PostgreSQL"),
+    (8080, "HTTP-Alt"),
+];
+
+/// Returns the service label for a given port, or `"Unknown"` if not in the dictionary.
+pub fn port_label(port: u16) -> &'static str {
+    COMMON_PORTS
+        .iter()
+        .find(|(p, _)| *p == port)
+        .map(|(_, label)| *label)
+        .unwrap_or("Unknown")
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn test_port_label_known() {
+        assert_eq!(port_label(135), "RPC/EPMAP");
+        assert_eq!(port_label(139), "NetBIOS");
+        assert_eq!(port_label(80), "HTTP");
+        assert_eq!(port_label(445), "SMB");
+    }
+
+    #[test]
+    fn test_port_label_unknown() {
+        assert_eq!(port_label(9999), "Unknown");
+    }
+
+    #[test]
+    fn test_common_ports_complete() {
+        // Every port in COMMON_PORTS has a non-empty label
+        for &(port, label) in COMMON_PORTS {
+            assert!(port > 0, "Port must be non-zero");
+            assert!(
+                !label.is_empty(),
+                "Label for port {} must not be empty",
+                port
+            );
+        }
+    }
+}

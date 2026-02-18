@@ -26,9 +26,10 @@
 ## 📍 Current State (Recursive Summary)
 
 ### 🛠️ Recent Changes (Last 3 Cycles)
-1.  **2026-02-17/TUI:** Implemented the `rageping` TUI binary using `ratatui` and `crossterm`. Followed provided mockups and added (c) WSALIGAN attribution.
-2.  **2026-02-17/Fixes:** Refactored `Scanner` progress to be monotonic (task completion count) and fixed UI cursor misalignment (+9 offset).
-3.  **2026-02-17/Refactor:** Extracted input handling to `App::on_key` and added 8 unit tests in `app.rs`. Verified via `sh scripts/verify.sh`.
+1.  **2026-02-18/Core:** Centralized port definitions in `types.rs` with `COMMON_PORTS` dictionary and `port_label` helper.
+2.  **2026-02-18/UI:** Integrated descriptive port labels into TUI detail popup and NWG results list (e.g., "RPC/EPMAP").
+3.  **2026-02-17/TUI:** Implemented the `rageping` TUI binary using `ratatui` and `crossterm`. Followed provided mockups and added (c) WSALIGAN attribution.
+4.  **2026-02-17/Fixes:** Refactored `Scanner` progress to be monotonic (task completion count) and fixed UI cursor misalignment (+9 offset).
 
 ### 🧩 Active Components & APIs
 * `src/lib.rs`: Library entry point; re-exports `tui`, `bridge`, `net`, `scanner`, and `types`.
@@ -56,6 +57,7 @@
 * **2026-02-17:** Standardized on **Rust 2024 Edition** across `Cargo.toml` and documentation.
 * **2026-02-17/Refactor:** Moved core logic to a library to support multi-frontend development (TUI/CLI).
 * **2026-02-17/Observability:** Implemented profile-based log levels and promoted ARP warnings to errors to ensure production visibility of network failures.
+* **2026-02-18/Architecture:** Established `types.rs` as the single source of truth for shared metadata (e.g., `COMMON_PORTS`) to ensure consistency across multiple frontends.
 
 ---
 

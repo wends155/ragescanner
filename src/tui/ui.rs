@@ -235,15 +235,7 @@ fn render_detail_popup(f: &mut Frame, res: &crate::types::ScanResult) {
         )));
     } else {
         for port in &res.open_ports {
-            let service = match port {
-                80 => "HTTP",
-                443 => "HTTPS",
-                22 => "SSH",
-                21 => "FTP",
-                3389 => "RDP",
-                445 => "SMB",
-                _ => "Unknown",
-            };
+            let service = crate::types::port_label(*port);
             text.push(Line::from(format!("  • Port {}: {}", port, service)));
         }
     }

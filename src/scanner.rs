@@ -4,7 +4,7 @@
 //! port scan) and streams results via a Tokio channel.
 
 use crate::net::NetworkProvider;
-use crate::types::{BridgeMessage, GError, ScanResult, ScanStatus};
+use crate::types::{BridgeMessage, COMMON_PORTS, GError, ScanResult, ScanStatus};
 use std::net::Ipv4Addr;
 use std::sync::Arc;
 use tokio::sync::Semaphore;
@@ -15,10 +15,6 @@ pub struct Scanner {
     net_utils: Arc<dyn NetworkProvider>,
     tx_bridge: Sender<BridgeMessage>,
 }
-
-const COMMON_PORTS: &[u16] = &[
-    21, 22, 23, 25, 53, 80, 110, 135, 139, 443, 445, 1433, 3306, 3389, 5432, 8080,
-];
 
 const MAX_CONCURRENT_TASKS: usize = 100;
 
@@ -157,7 +153,7 @@ impl Scanner {
                             // Port Scan (Async)
                             if is_online {
                                 let mut open_ports = Vec::new();
-                                for &port in COMMON_PORTS {
+                                for &(port, _) in COMMON_PORTS {
                                     if net_utils.scan_port(ip, port).await {
                                         open_ports.push(port);
                                     }

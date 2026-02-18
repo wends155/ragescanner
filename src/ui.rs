@@ -240,7 +240,7 @@ impl RageScannerApp {
         let ports_str = res
             .open_ports
             .iter()
-            .map(|p| p.to_string())
+            .map(|p| format!("{} ({})", p, ragescanner::types::port_label(*p)))
             .collect::<Vec<String>>()
             .join(", ");
 
