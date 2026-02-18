@@ -50,7 +50,8 @@ ragescanner/
 ├── Makefile             # Build shortcuts (check, build, run, test, verify)
 ├── GEMINI.md            # Workflow rules (Operational Source of Truth)
 ├── architecture.md      # This file (Technical Source of Truth)
-└── context.md           # Decision history (Contextual Source of Truth)
+├── context.md           # Decision history (Contextual Source of Truth)
+└── spec.md              # Behavioral contracts (Behavioral Source of Truth)
 ```
 
 ---

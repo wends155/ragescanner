@@ -28,8 +28,8 @@
 ### 🛠️ Recent Changes (Last 3 Cycles)
 1.  **2026-02-18/Core:** Centralized port definitions in `types.rs` with `COMMON_PORTS` dictionary and `port_label` helper.
 2.  **2026-02-18/UI:** Integrated descriptive port labels into TUI detail popup and NWG results list (e.g., "RPC/EPMAP").
-3.  **2026-02-17/TUI:** Implemented the `rageping` TUI binary using `ratatui` and `crossterm`. Followed provided mockups and added (c) WSALIGAN attribution.
-4.  **2026-02-17/Fixes:** Refactored `Scanner` progress to be monotonic (task completion count) and fixed UI cursor misalignment (+9 offset).
+3.  **2026-02-18/Docs:** Created `spec.md` as the Behavioral Source of Truth. Performed first detailed audits of test coverage and error quality.
+4.  **2026-02-17/TUI:** Implemented the `rageping` TUI binary using `ratatui` and `crossterm`. Followed provided mockup and added (c) WSALIGAN attribution.
 
 ### 🧩 Active Components & APIs
 * `src/lib.rs`: Library entry point; re-exports `tui`, `bridge`, `net`, `scanner`, and `types`.
@@ -58,12 +58,17 @@
 * **2026-02-17/Refactor:** Moved core logic to a library to support multi-frontend development (TUI/CLI).
 * **2026-02-17/Observability:** Implemented profile-based log levels and promoted ARP warnings to errors to ensure production visibility of network failures.
 * **2026-02-18/Architecture:** Established `types.rs` as the single source of truth for shared metadata (e.g., `COMMON_PORTS`) to ensure consistency across multiple frontends.
+* **2026-02-18/Governance:** Formalized `spec.md` as the Behavioral Source of Truth to comply with `GEMINI.md` requirements and provide a refactoring baseline.
 
 ---
 
 ## 🚧 Technical Debt & Pending Logic
-* **Known Issues:** None identified in initial audit.
-* **Next Steps:** Implement user-configurable port lists and secondary GUIs (e.g., Slint/egui) using the stable library interface.
+* **Test Gaps**: 11 uncovered scenarios including high-priority offline/error paths in the scanner and TUI filter logic.
+* **Error Context**: 72% of system errors (e.g. `scanner.rs:173`) are bare strings lacking IP/function context.
+* **Next Steps**:
+    *   Fix high-priority scanner test gaps (G7, G8).
+    *   Implement recommended error message improvements (E1-E3).
+    *   Implement user-configurable port lists.
 
 ---
 
